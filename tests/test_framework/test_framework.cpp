@@ -1,9 +1,9 @@
-#include <iostream>
-#include <ctime>
-
 #include "test_framework.h"
 
-TestCase _cases[MAX_TESTS]{};
+#include <ctime>
+#include <iostream>
+
+TestCase _cases[MAX_TESTS] {};
 int _case_count = 0;
 bool section_failed = false;
 
