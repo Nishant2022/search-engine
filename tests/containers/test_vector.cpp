@@ -1,6 +1,6 @@
 #include <cstddef>
 
-#include "search-engine/containers/vector.h"
+#include "vector.h"
 #include "test_framework.h"
 
 TEST_CASE(Vector) {
@@ -242,5 +242,54 @@ TEST_CASE(Vector) {
 
         REQUIRE(*(vec.end() - 1) == vec.back());
         REQUIRE(*(vec.rend() - 1) == vec.front());
+    };
+
+    SECTION(test_resize) {
+        ndash::vector<int> vec(5);
+        for (auto it = vec.begin(); it != vec.end(); ++it) {
+            *it = 10;
+        }
+
+        REQUIRE(vec.size() == 5);
+        for (auto it = vec.begin(); it != vec.end(); ++it) {
+            REQUIRE(*it == 10);
+        }
+
+        vec.resize(10);
+        REQUIRE(vec.size() == 10);
+        for (auto it = vec.begin(); it != vec.begin() + 5; ++it) {
+            REQUIRE(*it == 10);
+        }
+        for (auto it = vec.begin() + 5; it != vec.end(); ++it) {
+            REQUIRE(*it == 0);
+        }
+
+        vec.resize(20, 100);
+        REQUIRE(vec.size() == 20);
+        for (auto it = vec.begin(); it != vec.begin() + 5; ++it) {
+            REQUIRE(*it == 10);
+        }
+        for (auto it = vec.begin() + 5; it != vec.begin() + 10; ++it) {
+            REQUIRE(*it == 0);
+        }
+        for (auto it = vec.begin() + 10; it != vec.end(); ++it) {
+            REQUIRE(*it == 100);
+        }
+
+        vec.resize(3);
+        REQUIRE(vec.size() == 3);
+        for (auto it = vec.begin(); it != vec.end(); ++it) {
+            REQUIRE(*it == 10);
+        }
+
+        vec.resize(5);
+        REQUIRE(vec.size() == 5);
+        for (auto it = vec.begin(); it != vec.begin() + 3; ++it) {
+            REQUIRE(*it == 10);
+        }
+        for (auto it = vec.begin() + 3; it != vec.end(); ++it) {
+            REQUIRE(*it == 0);
+        }
+
     };
 }

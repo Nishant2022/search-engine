@@ -190,6 +190,38 @@ public:
     // Removes the last element
     void pop_back() { --_size; }
 
+    // Resize vector
+    //
+    // If count is equal to current size, do nothing
+    // If count is greater than current size, container is reduced to the first count elements
+    // If count is less than current size, additional copies of T are appended
+    void resize(size_t count) {
+        if (count > _size) {
+            reserve(count);
+            while (_size < count) {
+                emplace_back();
+            }
+        } else if (count < _size) {
+            _size = count;
+        }
+    }
+
+    // Resize vector
+    //
+    // If count is equal to current size, do nothing
+    // If count is greater than current size, container is reduced to the first count elements
+    // If count is less than current size, additional copies of `value` are appended
+    void resize(size_t count, const T& value) {
+        if (count > _size) {
+            reserve(count);
+            while (_size < count) {
+                emplace_back(value);
+            }
+        } else if (count < _size) {
+            _size = count;
+        }
+    }
+
     // Swap with another vector
     void swap(vector& other) {
         auto temp_size = other._size;
