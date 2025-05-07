@@ -39,10 +39,10 @@ extern bool section_failed;
     __attribute__((used)) static TestCaseRegister_##test_name _test_case_register_##test_name {}; \
     void test_case_##test_name(int _test_index)
 
-#define SECTION(sec_name)                                                                     \
-    TestSection& _section = _cases[_test_index].sections[_cases[_test_index].num_sections++]; \
-    _section.name = #sec_name;                                                                \
-    _section.func = []()
+#define SECTION(sec_name)                                                                                \
+    TestSection& _section_##sec_name = _cases[_test_index].sections[_cases[_test_index].num_sections++]; \
+    _section_##sec_name.name = #sec_name;                                                                \
+    _section_##sec_name.func = []()
 
 #define REQUIRE(cond)                                                                                      \
     if (!(cond)) {                                                                                         \
