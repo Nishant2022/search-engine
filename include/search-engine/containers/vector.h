@@ -340,8 +340,8 @@ public:
             return *this;
         }
 
-        T& operator[](ptrdiff_t diff) { return _ptr[diff]; }
-        const T& operator[](ptrdiff_t diff) const { return _ptr[diff]; }
+        T& operator[](ptrdiff_t diff) { return _ptr[-diff]; }
+        const T& operator[](ptrdiff_t diff) const { return _ptr[-diff]; }
 
         friend ReverseIterator operator+(const ReverseIterator& a, ptrdiff_t diff) {
             return ReverseIterator(a._ptr - diff);
