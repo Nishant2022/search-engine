@@ -6,6 +6,8 @@
 #include <initializer_list>
 #include <utility>
 
+#include "swap.h"
+
 namespace ndash {
 
 template <typename T>
@@ -18,7 +20,7 @@ public:
     // Default constructor
     //
     // Initializes vector to size 0 with capacity 0
-    vector()
+    constexpr vector()
         : _size(0)
         , _capacity(0)
         , _data(nullptr) {}
@@ -224,23 +226,16 @@ public:
 
     // Swap with another vector
     void swap(vector& other) {
-        auto temp_size = other._size;
-        other._size = _size;
-        _size = temp_size;
-
-        auto temp_capacity = other._capacity;
-        other._capacity = _capacity;
-        _capacity = temp_capacity;
-
-        auto temp_data = other._data;
-        other._data = _data;
-        _data = temp_data;
+        ndash::swap(_size, other._size);
+        ndash::swap(_capacity, other._capacity);
+        ndash::swap(_data, other._data);
     }
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// Iterators ///////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
 
+private:
     // Vector iterator struct
     struct Iterator {
         constexpr Iterator(T* ptr)
@@ -369,6 +364,7 @@ public:
         T* _ptr;
     };
 
+public:
     // Iterator begin
     constexpr Iterator begin() { return Iterator(_data); }
 
