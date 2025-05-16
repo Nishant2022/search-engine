@@ -322,6 +322,66 @@ TEST_CASE(String) {
         }
     };
 
+    SECTION(test_find) {
+        ndash::string str("the test tests the find operator");
+        ndash::string test("test");
+
+        REQUIRE_THAT(str.find("the"), EQ(0));
+        REQUIRE_THAT(str.find("the", 0), EQ(0));
+        REQUIRE_THAT(str.find("the", 1), EQ(15));
+
+        REQUIRE_THAT(str.find("tests", 0), EQ(9));
+        REQUIRE_THAT(str.find("tests", 0, 4), EQ(4));
+
+        REQUIRE_THAT(str.find(test, 0), EQ(4));
+        REQUIRE_THAT(str.find(test, 5), EQ(9));
+
+        REQUIRE_THAT(str.find('t'), EQ(0));
+        REQUIRE_THAT(str.find('t', 0), EQ(0));
+        REQUIRE_THAT(str.find('t', 1), EQ(4));
+    };
+
+    SECTION(test_rfind) {
+        ndash::string str("the test tests the find operator");
+        ndash::string test("test");
+
+        REQUIRE_THAT(str.rfind("the"), EQ(15));
+        REQUIRE_THAT(str.rfind("the", 15), EQ(15));
+        REQUIRE_THAT(str.rfind("the", 14), EQ(0));
+
+        REQUIRE_THAT(str.rfind("tests"), EQ(9));
+        REQUIRE_THAT(str.rfind("tests", ndash::string::npos, 4), EQ(9));
+        REQUIRE_THAT(str.rfind("tests", 8, 4), EQ(4));
+
+        REQUIRE_THAT(str.rfind(test), EQ(9));
+        REQUIRE_THAT(str.rfind(test, 8), EQ(4));
+
+        REQUIRE_THAT(str.rfind('t'), EQ(29));
+        REQUIRE_THAT(str.rfind('t', 29), EQ(29));
+        REQUIRE_THAT(str.rfind('t', 28), EQ(15));
+    };
+
+    SECTION(test_string_compare) {
+        auto test1 = "And not";
+        auto test2 = "nd";
+        auto test3 = "znd";
+
+        ndash::string str(test2);
+        ndash::string str2(test3);
+
+        REQUIRE_THAT(str.compare(test1), GT(0));
+        REQUIRE_THAT(str.compare(test2), EQ(0));
+        REQUIRE_THAT(str.compare(test3), LT(0));
+
+        REQUIRE_THAT(str2.compare(1, 2, test1), GT(0));
+        REQUIRE_THAT(str2.compare(1, 2, test2), EQ(0));
+        REQUIRE_THAT(str2.compare(1, 2, test3 + 1), EQ(0));
+
+        REQUIRE_THAT(str2.compare(1, 2, test1 + 1), EQ(0));
+        REQUIRE_THAT(str2.compare(1, 2, test1 + 4), NEQ(0));
+        REQUIRE_THAT(str2.compare(1, 2, test1 + 4, 1), EQ(0));
+    };
+
     SECTION(test_string_swap) {
         auto expected = "test";
         ndash::string str(expected);
@@ -361,5 +421,49 @@ TEST_CASE(String) {
 
         REQUIRE_THAT(str.rbegin()[1], EQ(expected[2]));
         REQUIRE_THAT(*(str.rbegin() + 2), EQ(expected[1]));
+    };
+
+    SECTION(test_string_addition) {
+        auto test1 = "test1";
+        auto test2 = "test2";
+        ndash::string str1(test1);
+        ndash::string str2(test2);
+
+        auto expected_str = "test1test2";
+
+        REQUIRE_THAT(str1 + str2, EQ(expected_str));
+        REQUIRE_THAT(str1 + test2, EQ(expected_str));
+        REQUIRE_THAT(test1 + str2, EQ(expected_str));
+
+        REQUIRE_THAT(str1 + 'a', EQ("test1a"));
+        REQUIRE_THAT('a' + str1, EQ("atest1"));
+    };
+
+    SECTION(test_comparison_operators) {
+        auto test1 = "test1";
+        auto test2 = "test2";
+        ndash::string str1(test1);
+        ndash::string str2(test2);
+
+        REQUIRE_THAT(str1, EQ(str1));
+        REQUIRE_THAT(str1, NEQ(str2));
+        REQUIRE_THAT(str1, LEQ(str2));
+        REQUIRE_THAT(str1, LT(str2));
+        REQUIRE_THAT(str2, GEQ(str1));
+        REQUIRE_THAT(str2, GT(str1));
+
+        REQUIRE_THAT(str1, EQ(test1));
+        REQUIRE_THAT(str1, NEQ(test2));
+        REQUIRE_THAT(str1, LEQ(test2));
+        REQUIRE_THAT(str1, LT(test2));
+        REQUIRE_THAT(str2, GEQ(test1));
+        REQUIRE_THAT(str2, GT(test1));
+
+        REQUIRE_THAT(test1, EQ(str1));
+        REQUIRE_THAT(test1, NEQ(str2));
+        REQUIRE_THAT(test1, LEQ(str2));
+        REQUIRE_THAT(test1, LT(str2));
+        REQUIRE_THAT(test2, GEQ(str1));
+        REQUIRE_THAT(test2, GT(str1));
     };
 }

@@ -51,59 +51,59 @@ extern bool section_failed;
         return;                                                                                            \
     }
 
-#define REQUIRE_THAT(actual, matcher) \
-    if (!(matcher(actual, #actual))) {         \
-        section_failed = true;        \
-        return;                       \
+#define REQUIRE_THAT(actual, matcher)  \
+    if (!(matcher(actual, #actual))) { \
+        section_failed = true;         \
+        return;                        \
     }
 
 // Matchers
 #define EQ(expected)                                                                                     \
-    [&](auto actual, auto actual_str) {                                                                                   \
+    [&](auto actual, auto actual_str) {                                                                  \
         if ((actual) == (expected)) return true;                                                         \
-        std::cerr << "    EQ failed: " << actual_str << " == " << #expected << " (actual: " << (actual)       \
+        std::cerr << "    EQ failed: " << actual_str << " == " << #expected << " (actual: " << (actual)  \
                   << ", expected: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n"; \
         return false;                                                                                    \
     }
 
-#define NEQ(expected)                                                                                     \
-    [&](auto actual, auto actual_str) {                                                                                   \
+#define NEQ(expected)                                                                                    \
+    [&](auto actual, auto actual_str) {                                                                  \
         if ((actual) != (expected)) return true;                                                         \
-        std::cerr << "    NEQ failed: " << actual_str << " != " << #expected << " (actual: " << (actual)       \
+        std::cerr << "    NEQ failed: " << actual_str << " != " << #expected << " (actual: " << (actual) \
                   << ", expected: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n"; \
         return false;                                                                                    \
     }
 
-#define LT(expected)                                                                                     \
-    [&](auto actual, auto actual_str) {                                                                                   \
-        if ((actual) < (expected)) return true;                                                         \
-        std::cerr << "    LT failed: " << actual_str << " < " << #expected << " (actual: " << (actual)       \
-                  << ", expected: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n"; \
-        return false;                                                                                    \
+#define LT(expected)                                                                                \
+    [&](auto actual, auto actual_str) {                                                             \
+        if ((actual) < (expected)) return true;                                                     \
+        std::cerr << "    LT failed: " << actual_str << " < " << #expected << " (lhs: " << (actual) \
+                  << ", rhs: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n"; \
+        return false;                                                                               \
     }
 
-#define GT(expected)                                                                                     \
-    [&](auto actual, auto actual_str) {                                                                                   \
-        if ((actual) > (expected)) return true;                                                         \
-        std::cerr << "    GT failed: " << actual_str << " > " << #expected << " (actual: " << (actual)       \
-                  << ", expected: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n"; \
-        return false;                                                                                    \
+#define GT(expected)                                                                                \
+    [&](auto actual, auto actual_str) {                                                             \
+        if ((actual) > (expected)) return true;                                                     \
+        std::cerr << "    GT failed: " << actual_str << " > " << #expected << " (lhs: " << (actual) \
+                  << ", rhs: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n"; \
+        return false;                                                                               \
     }
 
-#define LEQ(expected)                                                                                     \
-    [&](auto actual, auto actual_str) {                                                                                   \
-        if ((actual) <= (expected)) return true;                                                         \
-        std::cerr << "    LEQ failed: " << actual_str << " <= " << #expected << " (actual: " << (actual)       \
-                  << ", expected: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n"; \
-        return false;                                                                                    \
+#define LEQ(expected)                                                                                 \
+    [&](auto actual, auto actual_str) {                                                               \
+        if ((actual) <= (expected)) return true;                                                      \
+        std::cerr << "    LEQ failed: " << actual_str << " <= " << #expected << " (lhs: " << (actual) \
+                  << ", rhs: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";   \
+        return false;                                                                                 \
     }
 
-#define GEQ(expected)                                                                                     \
-    [&](auto actual, auto actual_str) {                                                                                   \
-        if ((actual) <= (expected)) return true;                                                         \
-        std::cerr << "    GEQ failed: " << actual_str << " >= " << #expected << " (actual: " << (actual)       \
-                  << ", expected: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n"; \
-        return false;                                                                                    \
+#define GEQ(expected)                                                                                 \
+    [&](auto actual, auto actual_str) {                                                               \
+        if ((actual) >= (expected)) return true;                                                      \
+        std::cerr << "    GEQ failed: " << actual_str << " >= " << #expected << " (lhs: " << (actual) \
+                  << ", rhs: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";   \
+        return false;                                                                                 \
     }
 
 #endif   // TEST_FRAMEWORK_H

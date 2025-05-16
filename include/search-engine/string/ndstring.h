@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <cstring>
+#include <ostream>
 
 #include "vector.h"
 
@@ -277,7 +278,7 @@ public:
     size_t find(const char* s, size_t pos, size_t count) const {
         for (; pos < size() - count; ++pos) {
             size_t i = 0;
-            while (i < count && _data[pos + i] == s[i]);
+            for (; i < count && _data[pos + i] == s[i]; ++i);
             if (i == count) return pos;
         }
         return npos;
@@ -300,9 +301,10 @@ public:
     // Find last substring equal to [ `s`, `s` + `count` ) before `pos`
     size_t rfind(const char* s, size_t pos, size_t count) const {
         if (pos > size()) pos = size() - count + 1;
+        pos++;
         while (pos-- > 0) {
             size_t i = 0;
-            while (i < count && _data[pos + i] == s[i]);
+            for (; i < count && _data[pos + i] == s[i]; ++i);
             if (i == count) return pos;
         }
         return npos;
@@ -314,6 +316,7 @@ public:
     // Find the last instance of `ch` before `pos`
     size_t rfind(char ch, size_t pos = npos) const {
         if (pos > size()) pos = size();
+        pos++;
         while (pos-- > 0) {
             if (_data[pos] == ch) return pos;
         }
@@ -350,7 +353,7 @@ public:
         if (count1 > size() - pos1) count1 = size() - pos1;
 
         size_t i = 0;
-        for (; i < count1 && i < count2 && _data[pos1 + i] == s[i]; ++i);
+        for (; i < count1 - 1 && i < count2 - 1 && _data[pos1 + i] == s[i]; ++i);
         return _data[pos1 + i] - s[i];
     }
 
@@ -398,6 +401,11 @@ public:
 
     friend bool operator==(const char* a, const string& b) { return b.compare(a) == 0; }
     friend int operator<=>(const char* a, const string& b) { return -b.compare(a); }
+
+    friend std::ostream& operator<<(std::ostream& os, const ndash::string& str) {
+        os.write(str.c_str(), str.size());
+        return os;
+    }
 
 private:
     vector<char> _data;
