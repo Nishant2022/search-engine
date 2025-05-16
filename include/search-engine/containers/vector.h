@@ -118,38 +118,38 @@ public:
     ///////////////////////////////////////////////////////////////////////////
 
     // Access specified element
-    T& operator[](size_t pos) { return _data[pos]; }
+    constexpr T& operator[](size_t pos) { return _data[pos]; }
 
     // Access specified element by const reference
-    const T& operator[](size_t pos) const { return _data[pos]; }
+    constexpr const T& operator[](size_t pos) const { return _data[pos]; }
 
     // Access first element
-    T& front() { return *_data; }
+    constexpr T& front() { return *_data; }
 
     // Access first element by const reference
-    const T& front() const { return *_data; }
+    constexpr const T& front() const { return *_data; }
 
     // Access last element
-    T& back() { return *(_data + _size - 1); }
+    constexpr T& back() { return *(_data + _size - 1); }
 
     // Access last element by const reference
-    const T& back() const { return *(_data + _size - 1); }
+    constexpr const T& back() const { return *(_data + _size - 1); }
 
     // Directly access data
-    T* data() { return _data; }
+    constexpr T* data() { return _data; }
 
     // Directly access constant data
-    const T* data() const { return _data; }
+    constexpr const T* data() const { return _data; }
 
     ///////////////////////////////////////////////////////////////////////////
     ////////////////////////////////// Capacity ///////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
 
     // Check if container is empty
-    bool empty() const { return !_size; }
+    constexpr bool empty() const { return !_size; }
 
     // Get number of elements in vector
-    size_t size() const { return _size; }
+    constexpr size_t size() const { return _size; }
 
     // Reserves storage
     //
@@ -165,7 +165,7 @@ public:
     }
 
     // Get number of elements that can be held in vector
-    size_t capacity() const { return _capacity; }
+    constexpr size_t capacity() const { return _capacity; }
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// Modifiers ///////////////////////////////
@@ -243,58 +243,58 @@ public:
 
     // Vector iterator struct
     struct Iterator {
-        Iterator(T* ptr)
+        constexpr Iterator(T* ptr)
             : _ptr(ptr) {}
 
-        T& operator*() const { return *_ptr; }
-        T* operator->() const { return _ptr; }
+        constexpr T& operator*() const { return *_ptr; }
+        constexpr T* operator->() const { return _ptr; }
 
-        Iterator& operator++() {
+        constexpr Iterator& operator++() {
             _ptr++;
             return *this;
         }
 
-        Iterator& operator++(int) {
+        constexpr Iterator& operator++(int) {
             Iterator tmp = *this;
             ++(*this);
             return tmp;
         }
 
-        Iterator& operator--() {
+        constexpr Iterator& operator--() {
             _ptr--;
             return *this;
         }
 
-        Iterator& operator--(int) {
+        constexpr Iterator& operator--(int) {
             Iterator tmp = *this;
             --(*this);
             return tmp;
         }
 
-        Iterator& operator+=(ptrdiff_t diff) {
+        constexpr Iterator& operator+=(ptrdiff_t diff) {
             _ptr += diff;
             return *this;
         }
 
-        Iterator& operator-=(ptrdiff_t diff) {
+        constexpr Iterator& operator-=(ptrdiff_t diff) {
             _ptr -= diff;
             return *this;
         }
 
-        T& operator[](ptrdiff_t diff) { return _ptr[diff]; }
-        const T& operator[](ptrdiff_t diff) const { return _ptr[diff]; }
+        constexpr T& operator[](ptrdiff_t diff) { return _ptr[diff]; }
+        constexpr const T& operator[](ptrdiff_t diff) const { return _ptr[diff]; }
 
-        friend Iterator operator+(const Iterator& a, ptrdiff_t diff) { return Iterator(a._ptr + diff); }
-        friend Iterator operator+(ptrdiff_t diff, const Iterator& a) { return a + diff; }
-        friend Iterator operator-(const Iterator& a, ptrdiff_t diff) { return Iterator(a._ptr - diff); }
-        friend Iterator operator-(ptrdiff_t diff, const Iterator& a) { return a - diff; }
+        friend constexpr Iterator operator+(const Iterator& a, ptrdiff_t diff) { return Iterator(a._ptr + diff); }
+        friend constexpr Iterator operator+(ptrdiff_t diff, const Iterator& a) { return a + diff; }
+        friend constexpr Iterator operator-(const Iterator& a, ptrdiff_t diff) { return Iterator(a._ptr - diff); }
+        friend constexpr Iterator operator-(ptrdiff_t diff, const Iterator& a) { return a - diff; }
 
-        friend bool operator==(const Iterator& a, const Iterator& b) { return a._ptr == b._ptr; }
-        friend bool operator!=(const Iterator& a, const Iterator& b) { return !(a == b); }
-        friend bool operator<(const Iterator& a, const Iterator& b) { return a._ptr < b._ptr; }
-        friend bool operator<=(const Iterator& a, const Iterator& b) { return a._ptr <= b._ptr; }
-        friend bool operator>(const Iterator& a, const Iterator& b) { return a._ptr > b._ptr; }
-        friend bool operator>=(const Iterator& a, const Iterator& b) { return a._ptr >= b._ptr; }
+        friend bool constexpr operator==(const Iterator& a, const Iterator& b) { return a._ptr == b._ptr; }
+        friend bool constexpr operator!=(const Iterator& a, const Iterator& b) { return !(a == b); }
+        friend bool constexpr operator<(const Iterator& a, const Iterator& b) { return a._ptr < b._ptr; }
+        friend bool constexpr operator<=(const Iterator& a, const Iterator& b) { return a._ptr <= b._ptr; }
+        friend bool constexpr operator>(const Iterator& a, const Iterator& b) { return a._ptr > b._ptr; }
+        friend bool constexpr operator>=(const Iterator& a, const Iterator& b) { return a._ptr >= b._ptr; }
 
     private:
         T* _ptr;
@@ -302,78 +302,84 @@ public:
 
     // Vector reverse iterator struct
     struct ReverseIterator {
-        ReverseIterator(T* ptr)
+        constexpr ReverseIterator(T* ptr)
             : _ptr(ptr) {}
 
-        T& operator*() const { return *_ptr; }
-        T* operator->() const { return _ptr; }
+        constexpr T& operator*() const { return *_ptr; }
+        constexpr T* operator->() const { return _ptr; }
 
-        ReverseIterator& operator++() {
+        constexpr ReverseIterator& operator++() {
             _ptr--;
             return *this;
         }
 
-        ReverseIterator& operator++(int) {
+        constexpr ReverseIterator& operator++(int) {
             Iterator tmp = *this;
             --(*this);
             return tmp;
         }
 
-        ReverseIterator& operator--() {
+        constexpr ReverseIterator& operator--() {
             _ptr++;
             return *this;
         }
 
-        ReverseIterator& operator--(int) {
+        constexpr ReverseIterator& operator--(int) {
             Iterator tmp = *this;
             ++(*this);
             return tmp;
         }
 
-        ReverseIterator& operator+=(ptrdiff_t diff) {
+        constexpr ReverseIterator& operator+=(ptrdiff_t diff) {
             _ptr -= diff;
             return *this;
         }
 
-        ReverseIterator& operator-=(ptrdiff_t diff) {
+        constexpr ReverseIterator& operator-=(ptrdiff_t diff) {
             _ptr += diff;
             return *this;
         }
 
-        T& operator[](ptrdiff_t diff) { return _ptr[-diff]; }
-        const T& operator[](ptrdiff_t diff) const { return _ptr[-diff]; }
+        constexpr T& operator[](ptrdiff_t diff) { return _ptr[-diff]; }
+        constexpr const T& operator[](ptrdiff_t diff) const { return _ptr[-diff]; }
 
-        friend ReverseIterator operator+(const ReverseIterator& a, ptrdiff_t diff) {
+        friend constexpr ReverseIterator operator+(const ReverseIterator& a, ptrdiff_t diff) {
             return ReverseIterator(a._ptr - diff);
         }
-        friend ReverseIterator operator+(ptrdiff_t diff, const ReverseIterator& a) { return a + diff; }
-        friend ReverseIterator operator-(const ReverseIterator& a, ptrdiff_t diff) {
+        friend constexpr ReverseIterator operator+(ptrdiff_t diff, const ReverseIterator& a) { return a + diff; }
+        friend constexpr ReverseIterator operator-(const ReverseIterator& a, ptrdiff_t diff) {
             return ReverseIterator(a._ptr + diff);
         }
-        friend ReverseIterator operator-(ptrdiff_t diff, const ReverseIterator& a) { return a - diff; }
+        friend constexpr ReverseIterator operator-(ptrdiff_t diff, const ReverseIterator& a) { return a - diff; }
 
-        friend bool operator==(const ReverseIterator& a, const ReverseIterator& b) { return a._ptr == b._ptr; }
-        friend bool operator!=(const ReverseIterator& a, const ReverseIterator& b) { return !(a == b); }
-        friend bool operator<(const ReverseIterator& a, const ReverseIterator& b) { return a._ptr > b._ptr; }
-        friend bool operator<=(const ReverseIterator& a, const ReverseIterator& b) { return a._ptr >= b._ptr; }
-        friend bool operator>(const ReverseIterator& a, const ReverseIterator& b) { return a._ptr < b._ptr; }
-        friend bool operator>=(const ReverseIterator& a, const ReverseIterator& b) { return a._ptr <= b._ptr; }
+        friend constexpr bool operator==(const ReverseIterator& a, const ReverseIterator& b) {
+            return a._ptr == b._ptr;
+        }
+        friend constexpr bool operator!=(const ReverseIterator& a, const ReverseIterator& b) { return !(a == b); }
+        friend constexpr bool operator<(const ReverseIterator& a, const ReverseIterator& b) { return a._ptr > b._ptr; }
+        friend constexpr bool operator<=(const ReverseIterator& a, const ReverseIterator& b) {
+            return a._ptr >= b._ptr;
+        }
+        friend constexpr bool operator>(const ReverseIterator& a, const ReverseIterator& b) { return a._ptr < b._ptr; }
+        friend constexpr bool operator>=(const ReverseIterator& a, const ReverseIterator& b) {
+            return a._ptr <= b._ptr;
+        }
 
     private:
         T* _ptr;
     };
 
     // Iterator begin
-    Iterator begin() { return Iterator(_data); }
+    constexpr Iterator begin() { return Iterator(_data); }
 
     // Iterator end
-    Iterator end() { return Iterator(_data + _size); }
+    constexpr Iterator end() { return Iterator(_data + _size); }
 
     // Iterator rbegin
-    ReverseIterator rbegin() { return ReverseIterator(_data + _size - 1); }
+    constexpr ReverseIterator rbegin() { return ReverseIterator(_data + _size - 1); }
 
     // Iterator rend
-    ReverseIterator rend() { return ReverseIterator(_data - 1); }
+    constexpr ReverseIterator rend() { return ReverseIterator(_data - 1); }
 
 private:
     size_t _size;

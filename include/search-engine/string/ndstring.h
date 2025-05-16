@@ -9,7 +9,7 @@
 
 namespace ndash {
 
-inline size_t strlen(const char* s) {
+constexpr inline size_t strlen(const char* s) {
     if (!s) return 0;
     auto it = s;
     for (; *it; ++it);
@@ -117,44 +117,44 @@ public:
     ///////////////////////////////////////////////////////////////////////////
 
     // Access specified element
-    char& operator[](size_t pos) { return _data[pos]; }
+    constexpr char& operator[](size_t pos) { return _data[pos]; }
 
     // Access specified element by const reference
-    const char& operator[](size_t pos) const { return _data[pos]; }
+    constexpr const char& operator[](size_t pos) const { return _data[pos]; }
 
     // Access first element
-    char& front() { return _data.front(); }
+    constexpr char& front() { return _data.front(); }
 
     // Access first element by const reference
-    const char& front() const { return _data.front(); }
+    constexpr const char& front() const { return _data.front(); }
 
     // Access last element
-    char& back() { return _data[_data.size() - 2]; }
+    constexpr char& back() { return _data[_data.size() - 2]; }
 
     // Access last element by const reference
-    const char& back() const { return _data[_data.size() - 2]; }
+    constexpr const char& back() const { return _data[_data.size() - 2]; }
 
     // Directly access data
-    char* data() { return _data.data(); }
+    constexpr char* data() { return _data.data(); }
 
     // Directly access data
-    const char* data() const { return _data.data(); }
+    constexpr const char* data() const { return _data.data(); }
 
     // Get c string
-    const char* c_str() const { return _data.data(); }
+    constexpr const char* c_str() const { return _data.data(); }
 
     ///////////////////////////////////////////////////////////////////////////
     ////////////////////////////////// Capacity ///////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
 
     // Check if string is empty
-    bool empty() const { return _data.size() == 1; }
+    constexpr bool empty() const { return _data.size() == 1; }
 
     // Number of characters in string
-    size_t size() const { return _data.size() - 1; }
+    constexpr size_t size() const { return _data.size() - 1; }
 
     // Number of characters in string
-    size_t length() const { return _data.size() - 1; }
+    constexpr size_t length() const { return _data.size() - 1; }
 
     // Reserves storage
     void reserve(size_t new_cap) { _data.reserve(new_cap + 1); }
@@ -256,26 +256,26 @@ public:
     ///////////////////////////////////////////////////////////////////////////
 
     // Iterator begin
-    auto begin() { return _data.begin(); }
+    constexpr auto begin() { return _data.begin(); }
 
     // Iterator end
-    auto end() { return _data.end() - 1; }
+    constexpr auto end() { return _data.end() - 1; }
 
     // Iterator rbegin
-    auto rbegin() { return _data.rbegin() + 1; }
+    constexpr auto rbegin() { return _data.rbegin() + 1; }
 
     // Iterator rend
-    auto rend() { return _data.rend(); }
+    constexpr auto rend() { return _data.rend(); }
 
     ///////////////////////////////////////////////////////////////////////////
     /////////////////////////////////// Search ////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
 
     // Find first instance of string after `pos`
-    size_t find(const string& str, size_t pos = 0) const { return find(str.c_str(), pos, str.size()); }
+    constexpr size_t find(const string& str, size_t pos = 0) const { return find(str.c_str(), pos, str.size()); }
 
     // Find first substring equal to [ `s`, `s` + `count` ) after `pos`
-    size_t find(const char* s, size_t pos, size_t count) const {
+    constexpr size_t find(const char* s, size_t pos, size_t count) const {
         for (; pos < size() - count; ++pos) {
             size_t i = 0;
             for (; i < count && _data[pos + i] == s[i]; ++i);
@@ -285,10 +285,10 @@ public:
     }
 
     // Find first instance of c_str `s` after `pos`
-    size_t find(const char* s, size_t pos = 0) const { return find(s, pos, strlen(s)); }
+    constexpr size_t find(const char* s, size_t pos = 0) const { return find(s, pos, strlen(s)); }
 
     // Find the first instance of `ch` after `pos`
-    size_t find(char ch, size_t pos = 0) const {
+    constexpr size_t find(char ch, size_t pos = 0) const {
         for (; pos < size(); ++pos) {
             if (_data[pos] == ch) return pos;
         }
@@ -296,10 +296,10 @@ public:
     }
 
     // Find last instance of string before `pos`
-    size_t rfind(const string& str, size_t pos = npos) const { return rfind(str.c_str(), pos, str.size()); }
+    constexpr size_t rfind(const string& str, size_t pos = npos) const { return rfind(str.c_str(), pos, str.size()); }
 
     // Find last substring equal to [ `s`, `s` + `count` ) before `pos`
-    size_t rfind(const char* s, size_t pos, size_t count) const {
+    constexpr size_t rfind(const char* s, size_t pos, size_t count) const {
         if (pos > size()) pos = size() - count + 1;
         pos++;
         while (pos-- > 0) {
@@ -311,10 +311,10 @@ public:
     }
 
     // Find last instance of c_str `s` before `pos`
-    size_t rfind(const char* s, size_t pos = npos) const { return rfind(s, pos, strlen(s)); }
+    constexpr size_t rfind(const char* s, size_t pos = npos) const { return rfind(s, pos, strlen(s)); }
 
     // Find the last instance of `ch` before `pos`
-    size_t rfind(char ch, size_t pos = npos) const {
+    constexpr size_t rfind(char ch, size_t pos = npos) const {
         if (pos > size()) pos = size();
         pos++;
         while (pos-- > 0) {
@@ -328,28 +328,30 @@ public:
     ///////////////////////////////////////////////////////////////////////////
 
     // Compares the string to the characters in `str`
-    int compare(const string& str) const { return compare(0, size(), str.c_str(), str.size()); }
+    constexpr int compare(const string& str) const { return compare(0, size(), str.c_str(), str.size()); }
 
     // Compares a [ `pos1`, `pos1 + count1` ) substring of this string to the characters in `str`
-    int compare(size_t pos1, size_t count1, const string& str) const {
+    constexpr int compare(size_t pos1, size_t count1, const string& str) const {
         return compare(pos1, count1, str.c_str(), str.size());
     }
 
     // Compares a [ `pos1`, `pos1 + count1` ) substring of this string to the characters
     // in the range [ `pos2`, `pos2 + count2` ) of `str`
-    int compare(size_t pos1, size_t count1, const string& str, size_t pos2, size_t count2) const {
+    constexpr int compare(size_t pos1, size_t count1, const string& str, size_t pos2, size_t count2) const {
         return compare(pos1, count1, str.c_str() + pos2, count2);
     }
 
     // Compares the string to the characters in `s`
-    int compare(const char* s) const { return compare(0, size(), s, strlen(s)); }
+    constexpr int compare(const char* s) const { return compare(0, size(), s, strlen(s)); }
 
     // Compares a [ `pos1`, `pos1 + count1` ) substring of this string to the characters in `s`
-    int compare(size_t pos1, size_t count1, const char* s) const { return compare(pos1, count1, s, strlen(s)); }
+    constexpr int compare(size_t pos1, size_t count1, const char* s) const {
+        return compare(pos1, count1, s, strlen(s));
+    }
 
     // Compares a [ `pos1`, `pos1 + count1` ) substring of this string to the characters
     // in the range [ `s`, `s + count2` )
-    int compare(size_t pos1, size_t count1, const char* s, size_t count2) const {
+    constexpr int compare(size_t pos1, size_t count1, const char* s, size_t count2) const {
         if (count1 > size() - pos1) count1 = size() - pos1;
 
         size_t i = 0;
@@ -393,14 +395,14 @@ public:
         return copy;
     }
 
-    friend bool operator==(const string& a, const string& b) { return a.compare(b) == 0; }
-    friend int operator<=>(const string& a, const string& b) { return a.compare(b); }
+    friend constexpr bool operator==(const string& a, const string& b) { return a.compare(b) == 0; }
+    friend constexpr int operator<=>(const string& a, const string& b) { return a.compare(b); }
 
-    friend bool operator==(const string& a, const char* b) { return a.compare(b) == 0; }
-    friend int operator<=>(const string& a, const char* b) { return a.compare(b); }
+    friend constexpr bool operator==(const string& a, const char* b) { return a.compare(b) == 0; }
+    friend constexpr int operator<=>(const string& a, const char* b) { return a.compare(b); }
 
-    friend bool operator==(const char* a, const string& b) { return b.compare(a) == 0; }
-    friend int operator<=>(const char* a, const string& b) { return -b.compare(a); }
+    friend constexpr bool operator==(const char* a, const string& b) { return b.compare(a) == 0; }
+    friend constexpr int operator<=>(const char* a, const string& b) { return -b.compare(a); }
 
     friend std::ostream& operator<<(std::ostream& os, const ndash::string& str) {
         os.write(str.c_str(), str.size());
