@@ -5,6 +5,7 @@
 #include <cstring>
 #include <ostream>
 
+#include "swap.h"
 #include "vector.h"
 
 namespace ndash {
@@ -249,7 +250,7 @@ public:
     }
 
     // Swap with another string
-    void swap(string& other) { _data.swap(other._data); }
+    void swap(string& other) { ndash::swap(_data, other._data); }
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// Iterators ///////////////////////////////
@@ -408,6 +409,9 @@ public:
         os.write(str.c_str(), str.size());
         return os;
     }
+
+    // Swap specialization
+    friend void swap(string& a, string& b) { a.swap(b); }
 
 private:
     vector<char> _data;

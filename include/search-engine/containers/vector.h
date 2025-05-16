@@ -381,6 +381,13 @@ public:
     // Iterator rend
     constexpr ReverseIterator rend() { return ReverseIterator(_data - 1); }
 
+    ///////////////////////////////////////////////////////////////////////////
+    /////////////////////////// Non-member functions //////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+    // Swap specialization
+    friend void swap(vector<T>& a, vector<T>& b) { a.swap(b); }
+
 private:
     size_t _size;
     size_t _capacity;

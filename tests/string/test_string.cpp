@@ -1,4 +1,6 @@
 #include "ndstring.h"
+#include "swap.h"
+
 #include "test_framework.h"
 
 TEST_CASE(String) {
@@ -390,7 +392,7 @@ TEST_CASE(String) {
         REQUIRE_THAT(str.size(), EQ(4));
         REQUIRE_THAT(swapped.size(), EQ(0));
 
-        str.swap(swapped);
+        ndash::swap(str, swapped);
 
         REQUIRE_THAT(str.size(), EQ(0));
         REQUIRE_THAT(swapped.size(), EQ(4));
