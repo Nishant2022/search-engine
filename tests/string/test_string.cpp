@@ -468,4 +468,19 @@ TEST_CASE(String) {
         REQUIRE_THAT(test2, GEQ(str1));
         REQUIRE_THAT(test2, GT(str1));
     };
+
+    SECTION(test_string_hash) {
+        ndash::string str1("test");
+        ndash::string str2("test");
+        ndash::string str3("test3");
+
+        ndash::hash<ndash::string> str_hash{};
+
+        REQUIRE_THAT(str_hash(str1), EQ(str_hash(str1)));
+        REQUIRE_THAT(str_hash(str2), EQ(str_hash(str2)));
+        REQUIRE_THAT(str_hash(str1), EQ(str_hash(str2)));
+        REQUIRE_THAT(str_hash(str3), EQ(str_hash(str3)));
+        REQUIRE_THAT(str_hash(str1), NEQ(str_hash(str3)));
+        REQUIRE_THAT(str_hash(str2), NEQ(str_hash(str3)));
+    };
 }

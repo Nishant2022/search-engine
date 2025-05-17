@@ -5,6 +5,7 @@
 #include <cstring>
 #include <ostream>
 
+#include "hash.h"
 #include "swap.h"
 #include "vector.h"
 
@@ -419,6 +420,18 @@ public:
 
 private:
     vector<char> _data;
+};
+
+template <>
+struct hash<string> {
+    constexpr inline size_t operator()(const string& str) {
+        size_t hash = FNV_OFFSET_BASIS;
+        for (auto it = str.begin(); it != str.end(); ++it) {
+            hash ^= *it;
+            hash *= FNV_PRIME;
+        }
+        return hash;
+    }
 };
 
 }   // namespace ndash
