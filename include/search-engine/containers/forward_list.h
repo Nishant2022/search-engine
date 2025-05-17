@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <utility>
 
+#include "iterator.h"
 #include "swap.h"
 
 namespace ndash {
@@ -206,12 +207,18 @@ public:
 
 private:
     // Forward list iterator struct
+    template <class T2>
     struct Iterator {
+        using value_type = T2;
+        using reference = T2&;
+        using pointer = T2*;
+        using difference_type = ptrdiff_t;
+
         constexpr Iterator(Node* ptr)
             : node(ptr) {}
 
-        constexpr T& operator*() const { return node->val; }
-        constexpr T* operator->() const { return &node->val; }
+        constexpr reference operator*() const { return node->val; }
+        constexpr pointer operator->() const { return &node->val; }
 
         constexpr Iterator& operator++() {
             node = node->next;
@@ -231,18 +238,28 @@ private:
         Node* node;
     };
 
+
 public:
+    using iterator = Iterator<T>;
+    using const_iterator = Iterator<const T>;
+
+    static_assert(forward_iterator<iterator>);
+    static_assert(forward_iterator<const_iterator>);
+
     // Iterator begin
-    constexpr Iterator begin() { return Iterator(head); }
+    constexpr iterator begin() { return iterator(head); }
+    constexpr iterator begin() const { return const_iterator(head); }
 
     // Iterator end
-    constexpr Iterator end() { return Iterator(nullptr); }
+    constexpr iterator end() { return iterator(nullptr); }
+    constexpr iterator end() const { return const_iterator(nullptr); }
 
 private:
     Node* head;
     Node* tail;
     size_t _size;
 };
+
 
 }   // namespace ndash
 

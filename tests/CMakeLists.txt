@@ -13,6 +13,7 @@ function(add_test_executables dir)
         target_include_directories(${test_name} PRIVATE
             ${CMAKE_SOURCE_DIR}/include/search-engine/containers/
             ${CMAKE_SOURCE_DIR}/include/search-engine/general_utilities/
+            ${CMAKE_SOURCE_DIR}/include/search-engine/iterators/
             ${CMAKE_SOURCE_DIR}/include/search-engine/string/
         )
 

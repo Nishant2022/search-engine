@@ -258,15 +258,19 @@ public:
 
     // Iterator begin
     constexpr auto begin() { return _data.begin(); }
+    constexpr auto begin() const { return _data.begin(); }
 
     // Iterator end
     constexpr auto end() { return _data.end() - 1; }
+    constexpr auto end() const { return _data.end() - 1; }
 
     // Iterator rbegin
     constexpr auto rbegin() { return _data.rbegin() + 1; }
+    constexpr auto rbegin() const { return _data.rbegin() + 1; }
 
     // Iterator rend
     constexpr auto rend() { return _data.rend(); }
+    constexpr auto rend() const { return _data.rend(); }
 
     ///////////////////////////////////////////////////////////////////////////
     /////////////////////////////////// Search ////////////////////////////////
