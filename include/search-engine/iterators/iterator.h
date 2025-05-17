@@ -3,6 +3,7 @@
 
 #include <concepts>
 #include <cstddef>
+#include <type_traits>
 
 namespace ndash {
 
@@ -18,11 +19,20 @@ concept input_iterator = requires(It it) {
     { it != it } -> std::convertible_to<bool>;
 };
 
+template <typename Ptr>
+concept forward_pointer = std::is_pointer_v<Ptr> && requires(Ptr ptr) {
+    { *ptr } -> std::convertible_to<std::remove_pointer_t<Ptr>&>;
+    { ptr == ptr } -> std::convertible_to<bool>;
+    { ptr != ptr } -> std::convertible_to<bool>;
+    { ++ptr } -> std::same_as<Ptr&>;
+    { ptr++ } -> std::same_as<Ptr>;
+};
+
 template <typename It>
-concept forward_iterator = input_iterator<It> && requires(It it) {
+concept forward_iterator = forward_pointer<It> || (input_iterator<It> && requires(It it) {
     { ++it } -> std::same_as<It&>;
     { it++ } -> std::same_as<It&>;
-};
+});
 
 template <typename It>
 concept bidirectional_iterator = forward_iterator<It> && requires(It it) {

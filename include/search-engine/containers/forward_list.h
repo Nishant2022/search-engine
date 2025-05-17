@@ -46,8 +46,9 @@ public:
     }
 
     // Constructs a list with the contents of the range [`first`, `last`)
-    template <typename InputIt>
-    forward_list(InputIt first, InputIt last)
+    template <typename ForwardIt>
+    forward_list(ForwardIt first, ForwardIt last)
+    requires forward_iterator<ForwardIt>
         : forward_list() {
         for (; first != last; ++first) {
             emplace_back(*first);

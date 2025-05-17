@@ -6,6 +6,7 @@
 #include <ostream>
 
 #include "hash.h"
+#include "iterator.h"
 #include "swap.h"
 #include "vector.h"
 
@@ -42,9 +43,10 @@ public:
         _data.push_back('\0');
     }
 
-    // Constructs a vector with the contents of the range [`first`, `last`)
-    template <typename InputIt>
-    string(InputIt first, InputIt last)
+    // Constructs a string with the contents of the range [`first`, `last`)
+    template <typename ForwardIt>
+    string(ForwardIt first, ForwardIt last)
+    requires forward_iterator<ForwardIt>
         : _data(first, last) {
         _data.push_back('\0');
     }

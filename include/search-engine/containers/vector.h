@@ -43,8 +43,9 @@ public:
     }
 
     // Constructs a vector with the contents of the range [`first`, `last`)
-    template <typename InputIt>
-    vector(InputIt first, InputIt last)
+    template <typename ForwardIt>
+    vector(ForwardIt first, ForwardIt last)
+    requires forward_iterator<ForwardIt>
         : vector() {
         while (first != last) {
             push_back(*(first++));
