@@ -111,98 +111,6 @@ public:
     ~forward_list() { clear(); };
 
     ///////////////////////////////////////////////////////////////////////////
-    /////////////////////////////// Element Access ////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
-
-    // Access first element
-    constexpr T& front() { return head->val; }
-
-    // Access first element by const reference
-    constexpr const T& front() const { return head->val; }
-
-    // Access last element
-    constexpr T& back() { return tail->val; }
-
-    // Access last element by const reference
-    constexpr const T& back() const { return tail->val; }
-
-    ///////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////// Capacity ///////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
-
-    // Check if container is empty
-    constexpr bool empty() const { return !_size; }
-
-    // Get number of elements in list
-    constexpr size_t size() const { return _size; }
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////// Modifiers ///////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
-
-    // Clears the contents of the list
-    void clear() {
-        while (_size) pop_front();
-    }
-
-    // Adds an element to the end of the list
-    void push_back(const T& value) { emplace_back(value); }
-
-    // Adds an element to the end of the list using move semantics
-    void push_back(T&& value) { emplace_back(std::move(value)); }
-
-    // Creates element at back of list
-    template <class... Args>
-    void emplace_back(Args&&... args) {
-        Node* next = new Node { T(std::forward<Args>(args)...), nullptr };
-        [[unlikely]] if (_size == 0) {
-            head = next;
-            tail = next;
-            _size = 1;
-        } else {
-            tail->next = next;
-            tail = next;
-            ++_size;
-        }
-    }
-
-    // Adds an element to the front of the list
-    void push_front(const T& value) { emplace_front(value); }
-
-    // Adds an element to the front of the list using move semantics
-    void push_front(T&& value) { emplace_front(std::move(value)); }
-
-    // Creates element at front of list
-    template <class... Args>
-    void emplace_front(Args&&... args) {
-        Node* next = new Node { T(std::forward<Args>(args)...), nullptr };
-        [[unlikely]] if (_size == 0) {
-            head = next;
-            tail = next;
-            _size = 1;
-        } else {
-            next->next = head;
-            head = next;
-            ++_size;
-        }
-    }
-
-    // Removes the first element
-    void pop_front() {
-        auto temp = head;
-        head = head->next;
-        delete temp;
-        --_size;
-    }
-
-    // Swap with another forward list
-    void swap(forward_list& other) {
-        ndash::swap(head, other.head);
-        ndash::swap(tail, other.tail);
-        ndash::swap(_size, other._size);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// Iterators ///////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
 
@@ -254,6 +162,100 @@ public:
     // Iterator end
     constexpr iterator end() { return iterator(nullptr); }
     constexpr iterator end() const { return const_iterator(nullptr); }
+
+    ///////////////////////////////////////////////////////////////////////////
+    /////////////////////////////// Element Access ////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+    // Access first element
+    constexpr T& front() { return head->val; }
+
+    // Access first element by const reference
+    constexpr const T& front() const { return head->val; }
+
+    // Access last element
+    constexpr T& back() { return tail->val; }
+
+    // Access last element by const reference
+    constexpr const T& back() const { return tail->val; }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////// Capacity ///////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+    // Check if container is empty
+    constexpr bool empty() const { return !_size; }
+
+    // Get number of elements in list
+    constexpr size_t size() const { return _size; }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////// Modifiers ///////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+    // Clears the contents of the list
+    void clear() {
+        while (_size) pop_front();
+    }
+
+    // Adds an element to the end of the list
+    iterator push_back(const T& value) { return emplace_back(value); }
+
+    // Adds an element to the end of the list using move semantics
+    iterator push_back(T&& value) { return emplace_back(std::move(value)); }
+
+    // Creates element at back of list
+    template <class... Args>
+    iterator emplace_back(Args&&... args) {
+        Node* next = new Node { T(std::forward<Args>(args)...), nullptr };
+        [[unlikely]] if (_size == 0) {
+            head = next;
+            tail = next;
+            _size = 1;
+        } else {
+            tail->next = next;
+            tail = next;
+            ++_size;
+        }
+        return iterator(next);
+    }
+
+    // Adds an element to the front of the list
+    iterator push_front(const T& value) { return emplace_front(value); }
+
+    // Adds an element to the front of the list using move semantics
+    iterator push_front(T&& value) { return emplace_front(std::move(value)); }
+
+    // Creates element at front of list
+    template <class... Args>
+    iterator emplace_front(Args&&... args) {
+        Node* next = new Node { T(std::forward<Args>(args)...), nullptr };
+        [[unlikely]] if (_size == 0) {
+            head = next;
+            tail = next;
+            _size = 1;
+        } else {
+            next->next = head;
+            head = next;
+            ++_size;
+        }
+        return iterator(next);
+    }
+
+    // Removes the first element
+    void pop_front() {
+        auto temp = head;
+        head = head->next;
+        delete temp;
+        --_size;
+    }
+
+    // Swap with another forward list
+    void swap(forward_list& other) {
+        ndash::swap(head, other.head);
+        ndash::swap(tail, other.tail);
+        ndash::swap(_size, other._size);
+    }
 
 private:
     Node* head;

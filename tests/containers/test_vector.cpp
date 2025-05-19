@@ -186,6 +186,7 @@ TEST_CASE(Vector) {
 
         REQUIRE_THAT(vec.size(), EQ(0));
         REQUIRE_THAT(vec.capacity(), EQ(10));
+        REQUIRE(vec.begin() == vec.end());
 
         vec.reserve(5);
 

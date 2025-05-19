@@ -123,18 +123,21 @@ TEST_CASE(Vector) {
     SECTION(test_push_pop_front) {
         ndash::forward_list<int> list {};
 
-        list.push_front(1);
+        auto it1 = list.push_front(1);
         REQUIRE(!list.empty());
         REQUIRE_THAT(list.size(), EQ(1));
         REQUIRE_THAT(list.front(), EQ(1));
         REQUIRE_THAT(list.back(), EQ(1));
         REQUIRE_THAT(&list.front(), EQ(&list.back()));
+        REQUIRE_THAT(*it1, EQ(1));
 
-        list.push_front(2);
+        auto it2 = list.push_front(2);
         REQUIRE_THAT(list.size(), EQ(2));
         REQUIRE_THAT(list.front(), EQ(2));
         REQUIRE_THAT(list.back(), EQ(1));
         REQUIRE_THAT(&list.front(), NEQ(&list.back()));
+        REQUIRE_THAT(*it2, EQ(2));
+        REQUIRE_THAT(*(++it2), EQ(1));
 
         list.pop_front();
         REQUIRE_THAT(list.size(), EQ(1));
@@ -142,11 +145,13 @@ TEST_CASE(Vector) {
         REQUIRE_THAT(list.back(), EQ(1));
         REQUIRE_THAT(&list.front(), EQ(&list.back()));
 
-        list.push_front(3);
+        auto it3 = list.push_front(3);
         REQUIRE_THAT(list.size(), EQ(2));
         REQUIRE_THAT(list.front(), EQ(3));
         REQUIRE_THAT(list.back(), EQ(1));
         REQUIRE_THAT(&list.front(), NEQ(&list.back()));
+        REQUIRE_THAT(*it3, EQ(3));
+        REQUIRE_THAT(*(++it3), EQ(1));
 
         int i = 3;
         for (auto it = list.begin(); it != list.end(); ++it) {
@@ -158,24 +163,30 @@ TEST_CASE(Vector) {
     SECTION(test_push_back) {
         ndash::forward_list<int> list {};
 
-        list.push_back(1);
+        auto it1 = list.push_back(1);
         REQUIRE(!list.empty());
         REQUIRE_THAT(list.size(), EQ(1));
         REQUIRE_THAT(list.front(), EQ(1));
         REQUIRE_THAT(list.back(), EQ(1));
         REQUIRE_THAT(&list.front(), EQ(&list.back()));
+        REQUIRE_THAT(*it1, EQ(1));
+        REQUIRE(++it1 == list.end());
 
-        list.push_back(2);
+        auto it2 = list.push_back(2);
         REQUIRE_THAT(list.size(), EQ(2));
         REQUIRE_THAT(list.front(), EQ(1));
         REQUIRE_THAT(list.back(), EQ(2));
         REQUIRE_THAT(&list.front(), NEQ(&list.back()));
+        REQUIRE_THAT(*it2, EQ(2));
+        REQUIRE(++it2 == list.end());
 
-        list.push_back(3);
+        auto it3 = list.push_back(3);
         REQUIRE_THAT(list.size(), EQ(3));
         REQUIRE_THAT(list.front(), EQ(1));
         REQUIRE_THAT(list.back(), EQ(3));
         REQUIRE_THAT(&list.front(), NEQ(&list.back()));
+        REQUIRE_THAT(*it3, EQ(3));
+        REQUIRE(++it3 == list.end());
     };
 
     SECTION(test_clear_and_reserve) {
@@ -186,6 +197,7 @@ TEST_CASE(Vector) {
         list.clear();
 
         REQUIRE_THAT(list.size(), EQ(0));
+        REQUIRE(list.begin() == list.end());
     };
 
     SECTION(test_non_primitive) {
