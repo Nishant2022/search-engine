@@ -483,4 +483,58 @@ TEST_CASE(String) {
         REQUIRE_THAT(str_hash(str1), NEQ(str_hash(str3)));
         REQUIRE_THAT(str_hash(str2), NEQ(str_hash(str3)));
     };
+
+    SECTION(test_starts_with) {
+        ndash::string str("The quick brown fox");
+        ndash::string test("The");
+        ndash::string test2("The quick brown fox jumped");
+        ndash::string test3("Test");
+
+        REQUIRE(str.starts_with(test));
+        REQUIRE(!str.starts_with(test2));
+        REQUIRE(!str.starts_with(test3));
+
+        REQUIRE(str.starts_with("The"));
+        REQUIRE(!str.starts_with("The quick brown fox jumped"));
+        REQUIRE(!str.starts_with("Test"));
+
+        REQUIRE(str.starts_with('T'));
+        REQUIRE(!str.starts_with('S'));
+    };
+
+    SECTION(test_ends_with) {
+        ndash::string str("The quick brown fox");
+        ndash::string test("fox");
+        ndash::string test2("The quick brown fox jumped");
+        ndash::string test3("Test");
+
+        REQUIRE(str.ends_with(test));
+        REQUIRE(!str.ends_with(test2));
+        REQUIRE(!str.ends_with(test3));
+
+        REQUIRE(str.ends_with("fox"));
+        REQUIRE(!str.ends_with("The quick brown fox jumped"));
+        REQUIRE(!str.ends_with("Test"));
+
+        REQUIRE(str.ends_with('x'));
+        REQUIRE(!str.ends_with('y'));
+    };
+
+    SECTION(test_contains) {
+        ndash::string str("The quick brown fox");
+        ndash::string test("quick");
+        ndash::string test2("The quick brown fox jumped");
+        ndash::string test3("Test");
+
+        REQUIRE(str.contains(test));
+        REQUIRE(!str.contains(test2));
+        REQUIRE(!str.contains(test3));
+
+        REQUIRE(str.contains("quick"));
+        REQUIRE(!str.contains("The quick brown fox jumped"));
+        REQUIRE(!str.contains("Test"));
+
+        REQUIRE(str.contains('q'));
+        REQUIRE(!str.contains('z'));
+    };
 }

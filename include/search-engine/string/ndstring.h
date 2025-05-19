@@ -284,6 +284,8 @@ public:
 
     // Find first substring equal to [ `s`, `s` + `count` ) after `pos`
     constexpr size_t find(const char* s, size_t pos, size_t count) const {
+        if (count > size()) return npos;
+
         for (; pos < size() - count; ++pos) {
             size_t i = 0;
             for (; i < count && _data[pos + i] == s[i]; ++i);
@@ -366,6 +368,59 @@ public:
         for (; i < count1 - 1 && i < count2 - 1 && _data[pos1 + i] == s[i]; ++i);
         return _data[pos1 + i] - s[i];
     }
+
+    // Check if string begins with prefix `str`
+    constexpr bool starts_with(const string& str) const {
+        if (str.size() > size()) return false;
+        for (auto i = 0u; i < str.size(); ++i) {
+            if (_data[i] != str[i]) return false;
+        }
+        return true;
+    }
+
+    // Check if string begins with prefix `ch`
+    constexpr bool starts_with(char ch) const { return front() == ch; }
+
+    // Check if string begins with prefix `s`
+    constexpr bool starts_with(const char* s) const {
+        auto s_size = strlen(s);
+        if (s_size > size()) return false;
+        for (auto i = 0u; i < s_size; ++i) {
+            if (_data[i] != s[i]) return false;
+        }
+        return true;
+    }
+
+    // Check if string ends with prefix `str`
+    constexpr bool ends_with(const string& str) const {
+        if (str.size() > size()) return false;
+        for (auto i = 0u; i < str.size(); ++i) {
+            if (_data[size() - i - 1] != str[str.size() - i - 1]) return false;
+        }
+        return true;
+    }
+
+    // Check if string ends with prefix `ch`
+    constexpr bool ends_with(char ch) const { return back() == ch; }
+
+    // Check if string ends with prefix `s`
+    constexpr bool ends_with(const char* s) const {
+        auto s_size = strlen(s);
+        if (s_size > size()) return false;
+        for (auto i = 0u; i < s_size; ++i) {
+            if (_data[size() - i - 1] != s[s_size - i - 1]) return false;
+        }
+        return true;
+    }
+
+    // Check if string contains `str`
+    constexpr bool contains(const string& str) const { return find(str) != npos; }
+
+    // Check if string contains `ch`
+    constexpr bool contains(char ch) const { return find(ch) != npos; }
+
+    // Check if string contains `s`
+    constexpr bool contains(const char* s) const { return find(s) != npos; }
 
     ///////////////////////////////////////////////////////////////////////////
     /////////////////////////// Non-member functions //////////////////////////
