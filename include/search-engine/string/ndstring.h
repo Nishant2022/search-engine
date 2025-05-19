@@ -426,7 +426,7 @@ private:
 
 template <>
 struct hash<string> {
-    constexpr inline size_t operator()(const string& str) {
+    constexpr inline size_t operator()(const string& str) const {
         size_t hash = FNV_OFFSET_BASIS;
         for (auto it = str.begin(); it != str.end(); ++it) {
             hash ^= *it;
