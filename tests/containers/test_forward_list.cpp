@@ -3,7 +3,7 @@
 #include "forward_list.h"
 #include "test_framework.h"
 
-TEST_CASE(Vector) {
+TEST_CASE(ForwardList) {
     SECTION(test_empty_list) {
         ndash::forward_list<int> list {};
 

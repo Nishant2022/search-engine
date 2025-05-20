@@ -11,7 +11,7 @@ constexpr const size_t FNV_PRIME = 1099511628211u;
 // Default hash function
 template <class Key>
 struct hash {
-    constexpr inline size_t operator()(const Key& key, const size_t len = sizeof(&key)) const {
+    constexpr inline size_t operator()(const Key& key, const size_t len = sizeof(key)) const {
         const char* bytes = reinterpret_cast<const char*>(&key);
         size_t hash = FNV_OFFSET_BASIS;
 

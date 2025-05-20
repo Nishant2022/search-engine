@@ -18,7 +18,8 @@ function(add_test_executables dir)
         )
 
         target_link_libraries(${test_name} PRIVATE test_framework)
-        target_compile_options(${test_name} PRIVATE -Wall -Wextra -g)
+        target_compile_options(${test_name} PRIVATE -Wall -Wextra -fsanitize=address -g)
+        target_link_options(${test_name} PRIVATE -fsanitize=address)
 
         add_test(NAME ${test_name} COMMAND ${test_name})
     endforeach()

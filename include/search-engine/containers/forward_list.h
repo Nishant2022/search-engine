@@ -87,6 +87,7 @@ public:
     // Copy assignment operator
     forward_list& operator=(const forward_list& other) {
         if (&other != this) {
+            clear();
             forward_list temp(other);
             this->swap(temp);
         }
@@ -96,6 +97,7 @@ public:
     // Move assignment operator
     forward_list& operator=(forward_list&& other) {
         if (&other != this) {
+            clear();
             this->swap(other);
             other.head = nullptr;
             other.tail = nullptr;
@@ -260,11 +262,8 @@ public:
         if (next) {
             pos._node->next = next->next;
             if (next == head) head = next->next;
-            if (next == tail && _size > 1) {
-                if (_size > 1)
-                    tail = pos._node;
-                else
-                    tail = nullptr;
+            if (next == tail) {
+                tail = (pos._node == &before ? nullptr : pos._node);
             }
 
             delete next;
@@ -302,7 +301,7 @@ public:
 
     // Swap with another forward list
     void swap(forward_list& other) {
-        ndash::swap(before, other.before);
+        ndash::swap(before.next, other.before.next);
         ndash::swap(head, other.head);
         ndash::swap(tail, other.tail);
         ndash::swap(_size, other._size);
