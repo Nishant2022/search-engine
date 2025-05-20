@@ -31,7 +31,7 @@ concept forward_pointer = std::is_pointer_v<Ptr> && requires(Ptr ptr) {
 template <typename It>
 concept forward_iterator = forward_pointer<It> || (input_iterator<It> && requires(It it) {
     { ++it } -> std::same_as<It&>;
-    { it++ } -> std::same_as<It&>;
+    { it++ } -> std::same_as<It>;
 });
 
 template <typename It>

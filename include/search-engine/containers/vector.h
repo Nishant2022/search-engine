@@ -262,7 +262,7 @@ private:
             return *this;
         }
 
-        constexpr Iterator& operator++(int) {
+        constexpr Iterator operator++(int) {
             Iterator tmp = *this;
             ++(*this);
             return tmp;
