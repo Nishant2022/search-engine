@@ -106,4 +106,28 @@ extern bool section_failed;
         return false;                                                                                 \
     }
 
+#define STARTS_WITH(expected)                                                                                 \
+    [&](auto actual, auto actual_str) {                                                               \
+        if ((actual).starts_with(expected)) return true;                                                      \
+        std::cerr << "    STARTS_WITH failed: " << actual_str << ".starts_with(" << #expected << ") (actual: " << (actual) \
+                  << ", prefix: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";   \
+        return false;                                                                                 \
+    }
+
+#define ENDS_WITH(expected)                                                                                 \
+    [&](auto actual, auto actual_str) {                                                               \
+        if ((actual).ends_with(expected)) return true;                                                      \
+        std::cerr << "    ENDS_WITH failed: " << actual_str << ".ends_with(" << #expected << ") (actual: " << (actual) \
+                  << ", suffix: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";   \
+        return false;                                                                                 \
+    }
+
+#define CONTAINS(expected)                                                                                 \
+    [&](auto actual, auto actual_str) {                                                               \
+        if ((actual).contains(expected)) return true;                                                      \
+        std::cerr << "    CONTAINS failed: " << actual_str << ".contains(" << #expected << ") (actual: " << (actual) \
+                  << ", expected: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";   \
+        return false;                                                                                 \
+    }
+
 #endif   // TEST_FRAMEWORK_H
