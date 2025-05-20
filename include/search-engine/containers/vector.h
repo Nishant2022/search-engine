@@ -34,11 +34,11 @@ public:
 
     // Constructs a vector with `count` size and `count` capacity, all set to `value`
     vector(size_t count, const T& value)
-        : _size(count)
+        : _size(0)
         , _capacity(count)
         , _data(new T[count]) {
-        for (auto i = _data; i < _data + count; ++i) {
-            *i = value;
+        for (size_t i = 0; i < count; ++i) {
+            emplace_back(value);
         }
     }
 
@@ -48,7 +48,7 @@ public:
     requires forward_iterator<ForwardIt>
         : vector() {
         while (first != last) {
-            push_back(*(first++));
+            emplace_back(*(first++));
         }
     }
 
@@ -58,16 +58,18 @@ public:
         , _capacity(list.size())
         , _data(new T[list.size()]) {
         for (auto it = list.begin(); it != list.end(); ++it) {
-            push_back(*it);
+            emplace_back(*it);
         }
     }
 
     // Copy constructor
     vector(const vector& other)
-        : _size(other._size)
+        : _size(0)
         , _capacity(other._capacity)
         , _data(new T[other._capacity]) {
-        memcpy(_data, other._data, other._size * sizeof(T));
+        for (auto it = other.begin(); it != other.end(); ++it) {
+            emplace_back(*it);
+        }
     }
 
     // Move constructor
@@ -83,8 +85,11 @@ public:
     // Assignment operator
     vector& operator=(const vector& other) {
         if (&other != this) {
-            vector temp(other);
-            this->swap(temp);
+            clear();
+            reserve(other._size);
+            for (auto it = other.begin(); it != other.end(); ++it) {
+                emplace_back(*it);
+            }
         }
         return *this;
     }
@@ -106,16 +111,23 @@ public:
     }
 
     vector& operator=(std::initializer_list<T> ilist) {
+        clear();
         reserve(ilist.size());
-        _size = ilist.size();
         int i = 0;
         for (auto it = ilist.begin(); it != ilist.end(); ++it, ++i) {
-            _data[i] = *it;
+            emplace_back(*it);
         }
         return *this;
     }
 
-    ~vector() { delete[] _data; }
+    // Destructor
+    ~vector() {
+        for (size_t i = 0; i < _size; ++i) {
+            _data[i].~T();
+        }
+        delete[] _data;
+        _data = nullptr;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     /////////////////////////////// Element Access ////////////////////////////
@@ -159,11 +171,23 @@ public:
     //
     // If `new_cap` is less than current capacity, nothing is done
     void reserve(size_t new_cap) {
-        if (new_cap < _capacity) return;
+        if (new_cap <= _capacity) return;
 
+        // Create new buffer
         T* copy = new T[new_cap];
-        memcpy(copy, _data, sizeof(T) * _size);
+
+        // Copy elements
+        for (size_t i = 0; i < _size; ++i) {
+            new (copy + i) T(std::move_if_noexcept(_data[i]));
+        }
+
+        // Destroy old elements
+        for (size_t i = 0; i < _size; ++i) {
+            _data[i].~T();
+        }
+
         delete[] _data;
+
         _data = copy;
         _capacity = new_cap;
     }
@@ -176,7 +200,9 @@ public:
     ///////////////////////////////////////////////////////////////////////////
 
     // Clears the contents of the vector
-    void clear() { _size = 0; }
+    void clear() {
+        while (_size != 0) pop_back();
+    }
 
     // Adds an element to the end of the vector
     void push_back(const T& value) { emplace_back(value); }
@@ -188,11 +214,12 @@ public:
     template <class... Args>
     void emplace_back(Args&&... args) {
         [[unlikely]] if (_size == _capacity) { reserve(_capacity ? _capacity * 2 : 8); }
-        _data[_size++] = T(std::forward<Args>(args)...);
+        new (_data + _size) T(std::forward<Args>(args)...);
+        _size++;
     }
 
     // Removes the last element
-    void pop_back() { --_size; }
+    void pop_back() { _data[--_size].~T(); }
 
     // Resize vector
     //

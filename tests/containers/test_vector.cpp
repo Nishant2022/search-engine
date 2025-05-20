@@ -1,5 +1,6 @@
 #include <cstddef>
 
+#include "pair.h"
 #include "test_framework.h"
 #include "vector.h"
 
@@ -219,11 +220,11 @@ TEST_CASE(Vector) {
 
         ndash::vector<non_primitive> copy(vec);
 
-        REQUIRE_THAT(copy.size() , EQ(2));
-        REQUIRE_THAT(copy.capacity() , EQ(8));
+        REQUIRE_THAT(copy.size(), EQ(2));
+        REQUIRE_THAT(copy.capacity(), EQ(8));
         for (int i = 0; i < 2; ++i) {
-            REQUIRE_THAT(copy[i].a , EQ(0 + i));
-            REQUIRE_THAT(copy[i].b , EQ('a' + i));
+            REQUIRE_THAT(copy[i].a, EQ(0 + i));
+            REQUIRE_THAT(copy[i].b, EQ('a' + i));
         }
     };
 
@@ -231,18 +232,18 @@ TEST_CASE(Vector) {
         ndash::vector<int> vec = { 0, 1, 2, 3, 4 };
         int i = 0;
         for (auto it = vec.begin(); it != vec.end(); ++it) {
-            REQUIRE_THAT(*it , EQ(i++));
+            REQUIRE_THAT(*it, EQ(i++));
         }
 
         for (auto it = vec.rbegin(); it != vec.rend(); ++it) {
-            REQUIRE_THAT(*it , EQ(--i));
+            REQUIRE_THAT(*it, EQ(--i));
         }
 
-        REQUIRE_THAT(*(vec.begin() + 3) , EQ(3));
-        REQUIRE_THAT(*(vec.rbegin() + 3) , EQ(1));
+        REQUIRE_THAT(*(vec.begin() + 3), EQ(3));
+        REQUIRE_THAT(*(vec.rbegin() + 3), EQ(1));
 
-        REQUIRE_THAT(*(vec.end() - 1) , EQ(vec.back()));
-        REQUIRE_THAT(*(vec.rend() - 1) , EQ(vec.front()));
+        REQUIRE_THAT(*(vec.end() - 1), EQ(vec.back()));
+        REQUIRE_THAT(*(vec.rend() - 1), EQ(vec.front()));
     };
 
     SECTION(test_resize) {
@@ -251,15 +252,15 @@ TEST_CASE(Vector) {
             *it = 10;
         }
 
-        REQUIRE_THAT(vec.size() , EQ(5));
+        REQUIRE_THAT(vec.size(), EQ(5));
         for (auto it = vec.begin(); it != vec.end(); ++it) {
-            REQUIRE_THAT(*it , EQ(10));
+            REQUIRE_THAT(*it, EQ(10));
         }
 
         vec.resize(10);
-        REQUIRE_THAT(vec.size() , EQ(10));
+        REQUIRE_THAT(vec.size(), EQ(10));
         for (auto it = vec.begin(); it != vec.begin() + 5; ++it) {
-            REQUIRE_THAT(*it , EQ(10));
+            REQUIRE_THAT(*it, EQ(10));
         }
         for (auto it = vec.begin() + 5; it != vec.end(); ++it) {
             REQUIRE_THAT(*it, EQ(0));
@@ -290,6 +291,20 @@ TEST_CASE(Vector) {
         }
         for (auto it = vec.begin() + 3; it != vec.end(); ++it) {
             REQUIRE_THAT(*it, EQ(0));
+        }
+    };
+
+    SECTION(test_vector_of_pairs) {
+        ndash::vector<ndash::pair<int, int>> vec = {
+            { 1, 4 },
+            { 2, 5 },
+            { 3, 6 }
+        };
+
+        int index = 1;
+        for (auto it = vec.begin(); it != vec.end(); ++it, ++index) {
+            REQUIRE_THAT(it->first, EQ(index));
+            REQUIRE_THAT(it->second, EQ(index + 3));
         }
     };
 }
