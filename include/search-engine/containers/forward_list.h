@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <initializer_list>
+#include <type_traits>
 #include <utility>
 
 #include "iterator.h"
@@ -31,7 +32,9 @@ public:
     constexpr forward_list()
         : head(nullptr)
         , tail(nullptr)
-        , _size(0) {};
+        , _size(0) {
+        before.next = head;
+    };
 
     // Constructs a list with `count` size, all default initialized
     forward_list(size_t count)
@@ -74,6 +77,8 @@ public:
         : head(other.head)
         , tail(other.tail)
         , _size(other._size) {
+        before.next = head;
+
         other.head = nullptr;
         other.tail = nullptr;
         other._size = 0;
@@ -124,13 +129,23 @@ private:
         using difference_type = ptrdiff_t;
 
         constexpr Iterator(Node* ptr)
-            : node(ptr) {}
+        requires(!std::is_const_v<T2>)
+            : _node(ptr) {}
 
-        constexpr reference operator*() const { return node->val; }
-        constexpr pointer operator->() const { return &node->val; }
+        constexpr Iterator(const Node* ptr)
+        requires std::is_const_v<T2>
+            : _node(const_cast<Node*>(ptr)) {}
+
+        template <class U>
+        constexpr Iterator(const Iterator<U>& other)
+        requires std::is_same_v<T2, const U>
+            : _node(other._node) {}
+
+        constexpr reference operator*() const { return _node->val; }
+        constexpr pointer operator->() const { return &_node->val; }
 
         constexpr Iterator& operator++() {
-            node = node->next;
+            _node = _node->next;
             return *this;
         }
 
@@ -140,11 +155,10 @@ private:
             return tmp;
         }
 
-        friend bool constexpr operator==(const Iterator& a, const Iterator& b) { return a.node == b.node; }
+        friend bool constexpr operator==(const Iterator& a, const Iterator& b) { return a._node == b._node; }
         friend bool constexpr operator!=(const Iterator& a, const Iterator& b) { return !(a == b); }
 
-    private:
-        Node* node;
+        Node* _node;
     };
 
 
@@ -155,13 +169,17 @@ public:
     static_assert(forward_iterator<iterator>);
     static_assert(forward_iterator<const_iterator>);
 
+    // Iterator before begin
+    constexpr iterator before_begin() { return iterator(&before); }
+    constexpr const_iterator cbefore_begin() const { return const_iterator(&before); }
+
     // Iterator begin
     constexpr iterator begin() { return iterator(head); }
-    constexpr iterator begin() const { return const_iterator(head); }
+    constexpr const_iterator begin() const { return const_iterator(head); }
 
     // Iterator end
     constexpr iterator end() { return iterator(nullptr); }
-    constexpr iterator end() const { return const_iterator(nullptr); }
+    constexpr const_iterator end() const { return const_iterator(nullptr); }
 
     ///////////////////////////////////////////////////////////////////////////
     /////////////////////////////// Element Access ////////////////////////////
@@ -198,6 +216,63 @@ public:
         while (_size) pop_front();
     }
 
+    // Insert a copy of `value` after `pos`
+    iterator insert_after(const_iterator pos, const T& value) { return emplace_after(pos, value); }
+
+    // Moves `value` to node after `pos`
+    iterator insert_after(const_iterator pos, T&& value) { return emplace_after(pos, value); }
+
+    // Emplaces value after `pos`
+    template <class... Args>
+    iterator emplace_after(const_iterator pos, Args&&... args) {
+        Node* next = new Node { T(std::forward<Args>(args)...), nullptr };
+
+        if (_size == 0) {
+            head = next;
+            tail = next;
+            ++_size;
+            before.next = head;
+            return iterator(head);
+        }
+
+        ++_size;
+        if (pos._node->next == nullptr) {
+            pos._node->next = next;
+            tail = next;
+            return iterator(tail);
+        }
+
+        next->next = pos._node->next;
+        pos._node->next = next;
+
+        // If we inserted new head, update
+        if (next->next == head) {
+            head = next;
+            before.next = next;
+        }
+
+        return iterator(next);
+    }
+
+    // Erase element after `pos`
+    iterator erase_after(const_iterator pos) {
+        auto next = pos._node->next;
+        if (next) {
+            pos._node->next = next->next;
+            if (next == head) head = next->next;
+            if (next == tail && _size > 1) {
+                if (_size > 1)
+                    tail = pos._node;
+                else
+                    tail = nullptr;
+            }
+
+            delete next;
+            --_size;
+        }
+        return iterator(pos._node->next);
+    }
+
     // Adds an element to the end of the list
     iterator push_back(const T& value) { return emplace_back(value); }
 
@@ -207,17 +282,7 @@ public:
     // Creates element at back of list
     template <class... Args>
     iterator emplace_back(Args&&... args) {
-        Node* next = new Node { T(std::forward<Args>(args)...), nullptr };
-        [[unlikely]] if (_size == 0) {
-            head = next;
-            tail = next;
-            _size = 1;
-        } else {
-            tail->next = next;
-            tail = next;
-            ++_size;
-        }
-        return iterator(next);
+        return emplace_after(const_iterator(tail), std::forward<Args>(args)...);
     }
 
     // Adds an element to the front of the list
@@ -229,35 +294,22 @@ public:
     // Creates element at front of list
     template <class... Args>
     iterator emplace_front(Args&&... args) {
-        Node* next = new Node { T(std::forward<Args>(args)...), nullptr };
-        [[unlikely]] if (_size == 0) {
-            head = next;
-            tail = next;
-            _size = 1;
-        } else {
-            next->next = head;
-            head = next;
-            ++_size;
-        }
-        return iterator(next);
+        return emplace_after(const_iterator(&before), std::forward<Args>(args)...);
     }
 
     // Removes the first element
-    void pop_front() {
-        auto temp = head;
-        head = head->next;
-        delete temp;
-        --_size;
-    }
+    void pop_front() { erase_after(&before); }
 
     // Swap with another forward list
     void swap(forward_list& other) {
+        ndash::swap(before, other.before);
         ndash::swap(head, other.head);
         ndash::swap(tail, other.tail);
         ndash::swap(_size, other._size);
     }
 
 private:
+    Node before;
     Node* head;
     Node* tail;
     size_t _size;

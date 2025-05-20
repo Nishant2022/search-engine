@@ -227,4 +227,60 @@ TEST_CASE(Vector) {
             REQUIRE_THAT(it->b, EQ('a' + i));
         }
     };
+
+    SECTION(test_emplace_after) {
+        ndash::forward_list<int> list {};
+        REQUIRE(++list.before_begin() == list.begin());
+
+        list.emplace_after(list.before_begin(), 1);
+        REQUIRE_THAT(list.size(), EQ(1));
+        REQUIRE_THAT(list.front(), EQ(1));
+        REQUIRE_THAT(list.back(), EQ(1));
+        REQUIRE(++list.before_begin() == list.begin());
+
+        list.emplace_back(3);
+        REQUIRE_THAT(list.size(), EQ(2));
+        REQUIRE_THAT(list.front(), EQ(1));
+        REQUIRE_THAT(list.back(), EQ(3));
+
+        list.emplace_after(list.begin(), 2);
+        REQUIRE_THAT(list.size(), EQ(3));
+        REQUIRE_THAT(list.front(), EQ(1));
+        REQUIRE_THAT(list.back(), EQ(3));
+
+        int count = 1;
+        for (auto it = list.begin(); it != list.end(); ++it, ++count) {
+            REQUIRE_THAT(*it, EQ(count));
+        }
+    };
+
+    SECTION(test_erase_after) {
+        ndash::forward_list<int> list {};
+
+        list.push_back(1);
+        list.push_back(2);
+        list.push_back(3);
+        list.push_back(4);
+        list.push_back(5);
+
+        REQUIRE_THAT(list.size(), EQ(5));
+        REQUIRE_THAT(list.front(), EQ(1));
+        REQUIRE_THAT(list.back(), EQ(5));
+
+        list.erase_after(list.before_begin());
+        REQUIRE_THAT(list.size(), EQ(4));
+        REQUIRE_THAT(list.front(), EQ(2));
+        REQUIRE_THAT(list.back(), EQ(5));
+
+        list.erase_after(list.begin());
+        REQUIRE_THAT(list.size(), EQ(3));
+        REQUIRE_THAT(list.front(), EQ(2));
+        REQUIRE_THAT(*(++list.begin()), EQ(4));
+
+        list.erase_after(++list.begin());
+        REQUIRE_THAT(list.size(), EQ(2));
+        REQUIRE_THAT(list.front(), EQ(2));
+        REQUIRE_THAT(*(++list.begin()), EQ(4));
+        REQUIRE_THAT(list.back(), EQ(4));
+    };
 }
