@@ -5,6 +5,7 @@
 
 TestCase _cases[MAX_TESTS] {};
 int _case_count = 0;
+int _assertions_count = 0;
 bool section_failed = false;
 
 int main() {
@@ -39,4 +40,6 @@ int main() {
         }
         std::cout << std::endl;
     }
+    std::cout << "All tests passed (" << _assertions_count << " assertions in " << _case_count << " test cases)"
+              << std::endl;
 }

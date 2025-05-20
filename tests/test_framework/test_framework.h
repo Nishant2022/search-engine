@@ -25,6 +25,7 @@ struct TestCase {
 
 extern TestCase _cases[];
 extern int _case_count;
+extern int _assertions_count;
 extern bool section_failed;
 
 #define TEST_CASE(test_name)                                                                      \
@@ -45,6 +46,7 @@ extern bool section_failed;
     _section_##sec_name.func = []()
 
 #define REQUIRE(cond)                                                                                      \
+    _assertions_count++;                                                                                   \
     if (!(cond)) {                                                                                         \
         std::cerr << "    REQUIRE failed: " << #cond << " at " << __FILENAME__ << ":" << __LINE__ << "\n"; \
         section_failed = true;                                                                             \
@@ -52,6 +54,7 @@ extern bool section_failed;
     }
 
 #define REQUIRE_THAT(actual, matcher)  \
+    _assertions_count++;               \
     if (!(matcher(actual, #actual))) { \
         section_failed = true;         \
         return;                        \
@@ -106,28 +109,29 @@ extern bool section_failed;
         return false;                                                                                 \
     }
 
-#define STARTS_WITH(expected)                                                                                 \
-    [&](auto actual, auto actual_str) {                                                               \
-        if ((actual).starts_with(expected)) return true;                                                      \
-        std::cerr << "    STARTS_WITH failed: " << actual_str << ".starts_with(" << #expected << ") (actual: " << (actual) \
-                  << ", prefix: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";   \
-        return false;                                                                                 \
+#define STARTS_WITH(expected)                                                                                  \
+    [&](auto actual, auto actual_str) {                                                                        \
+        if ((actual).starts_with(expected)) return true;                                                       \
+        std::cerr << "    STARTS_WITH failed: " << actual_str << ".starts_with(" << #expected                  \
+                  << ") (actual: " << (actual) << ", prefix: " << (expected) << ") at " << __FILENAME__ << ":" \
+                  << __LINE__ << "\n";                                                                         \
+        return false;                                                                                          \
     }
 
-#define ENDS_WITH(expected)                                                                                 \
-    [&](auto actual, auto actual_str) {                                                               \
-        if ((actual).ends_with(expected)) return true;                                                      \
+#define ENDS_WITH(expected)                                                                                            \
+    [&](auto actual, auto actual_str) {                                                                                \
+        if ((actual).ends_with(expected)) return true;                                                                 \
         std::cerr << "    ENDS_WITH failed: " << actual_str << ".ends_with(" << #expected << ") (actual: " << (actual) \
-                  << ", suffix: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";   \
-        return false;                                                                                 \
+                  << ", suffix: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";                 \
+        return false;                                                                                                  \
     }
 
-#define CONTAINS(expected)                                                                                 \
-    [&](auto actual, auto actual_str) {                                                               \
-        if ((actual).contains(expected)) return true;                                                      \
+#define CONTAINS(expected)                                                                                           \
+    [&](auto actual, auto actual_str) {                                                                              \
+        if ((actual).contains(expected)) return true;                                                                \
         std::cerr << "    CONTAINS failed: " << actual_str << ".contains(" << #expected << ") (actual: " << (actual) \
-                  << ", expected: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";   \
-        return false;                                                                                 \
+                  << ", expected: " << (expected) << ") at " << __FILENAME__ << ":" << __LINE__ << "\n";             \
+        return false;                                                                                                \
     }
 
 #endif   // TEST_FRAMEWORK_H
