@@ -249,6 +249,11 @@ private:
         constexpr Iterator(pointer ptr)
             : _ptr(ptr) {}
 
+        template <class U>
+        constexpr Iterator(const Iterator<U>& other)
+        requires std::is_same_v<T2, const U>
+            : _ptr(other._ptr) {}
+
         constexpr reference operator*() const { return *_ptr; }
         constexpr pointer operator->() const { return _ptr; }
 
