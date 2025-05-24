@@ -3,8 +3,8 @@
 add_subdirectory(test_framework)
 
 set(ALL_TEST_SOURCES "")
-set(COMPILE_OPTIONS -Wall -Wextra -fsanitize=address -g)
-set(LINK_OPTIONS -fsanitize=address)
+set(COMPILE_OPTIONS -O0 -fsanitize=address -fsanitize=undefined -g)
+set(LINK_OPTIONS -fsanitize=address -fsanitize=undefined)
 
 function(add_test_executables dir)
     file(GLOB test_files "${dir}/*.cpp")
